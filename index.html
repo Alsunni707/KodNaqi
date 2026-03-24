@@ -3,46 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مؤسسة كود نقي - بإدارة د. السني خالد</title>
+    <title>مؤسسة كود نقي - النظام الشامل v15</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f4f7f9; --white: #ffffff; }
-        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: 0.3s; }
-        body { background: var(--bg); margin: 0; padding: 0; color: #333; }
+        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f4f7f9; --white: #ffffff; --danger: #e74c3c; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); margin: 0; padding: 0; }
 
         /* Splash Screen */
-        #splash { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .logo-anime { width: 130px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        #splash { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; }
+        .logo-img { width: 120px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
-        /* Login */
-        #login-page { display: none; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--white); padding: 40px; border-radius: 35px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
-
-        /* App Layout */
+        /* Main App Structure */
         #main-app { display: none; }
-        .header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top:0; z-index: 1000; }
-        .content { padding: 20px; max-width: 900px; margin: auto; }
+        .header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .content { padding: 20px; max-width: 1000px; margin: auto; }
 
-        /* Stats Dashboard */
-        .dashboard-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--white); padding: 20px; border-radius: 20px; text-align: center; border-bottom: 5px solid var(--secondary); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .stat-card b { font-size: 1.5rem; color: var(--primary); display: block; margin-top: 5px; }
+        /* Dashboard Stats */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--white); padding: 20px; border-radius: 20px; text-align: center; border-right: 5px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .stat-card b { font-size: 1.5rem; color: var(--primary); display: block; }
+
+        /* Main Menu */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .menu-item { background: var(--white); padding: 20px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid #eee; }
+        .menu-item i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
 
         /* Zones */
-        .zone { display: none; background: var(--white); padding: 30px; border-radius: 30px; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } }
+        .zone { display: none; background: var(--white); padding: 25px; border-radius: 25px; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd; background: #fafafa; font-size: 1rem; }
-        .btn-act { width: 100%; padding: 16px; border: none; border-radius: 12px; background: var(--secondary); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #ddd; background: #fafafa; font-size: 1rem; }
+        .btn-prime { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--secondary); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; }
 
-        /* Print Style (A4) */
-        #printArea { display: none; padding: 15mm; background: white; line-height: 1.6; }
-        .p-header { text-align: center; border-bottom: 3px double var(--primary); margin-bottom: 20px; padding-bottom: 10px; }
-        .p-table { width: 100%; border-collapse: collapse; margin-top: 20px; direction: ltr; }
-        .p-table th, .p-table td { border: 1px solid #333; padding: 12px; text-align: left; }
-        .p-footer { margin-top: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        th, td { border: 1px solid #eee; padding: 10px; text-align: center; }
+        th { background: #f8fafb; color: var(--primary); }
+
+        /* Print Area */
+        #printArea { display: none; padding: 20mm; background: white; direction: ltr; }
+        .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .report-table th, .report-table td { border: 1px solid #000; padding: 10px; text-align: left; }
 
         @media print {
             body * { visibility: hidden; }
@@ -54,117 +58,176 @@
 <body>
 
     <div id="splash">
-        <img src="kod_logo.png" class="logo-anime" onerror="this.src='https://via.placeholder.com/150'">
-        <h2 style="color:var(--primary); margin-top:15px;">مؤسسة كود نقي الطبية</h2>
-        <p>الخرطوم - السودان</p>
+        <img src="kod_logo.png" class="logo-img" onerror="this.src='https://via.placeholder.com/150?text=KOD+NAQI'">
+        <h2 style="color:var(--primary); margin-top:20px;">مؤسسة كود نقي الطبية</h2>
+        <p>دقة تداوي.. وثقة تبني</p>
     </div>
 
-    <div id="login-page">
-        <div class="login-card">
-            <img src="kod_logo.png" width="80">
+    <div id="login-page" style="display:flex; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; padding: 40px; border-radius: 30px; width: 100%; max-width: 380px; text-align: center;">
+            <img src="kod_logo.png" width="80" onerror="this.style.display='none'">
             <h3>نظام د. السني خالد</h3>
-            <input type="password" id="passCode" placeholder="كود الدخول">
-            <button class="btn-act" onclick="login()">دخول</button>
+            <input type="password" id="p" placeholder="كلمة المرور (7070)">
+            <button class="btn-prime" onclick="login()">دخول للنظام</button>
         </div>
     </div>
 
     <div id="main-app">
         <div class="header">
-            <i class="fas fa-bars" style="font-size:1.4rem; color:var(--primary)"></i>
-            <img src="kod_logo.png" height="40">
+            <b style="color:var(--primary)">KOD NAQI ERP</b>
+            <div style="font-size: 0.8rem; text-align: left;">الخرطوم - السودان</div>
             <i class="fas fa-power-off" onclick="location.reload()" style="color:red; cursor:pointer"></i>
         </div>
 
         <div class="content">
             <div id="home">
-                <div class="dashboard-row">
+                <div class="stats-grid">
                     <div class="stat-card">مرضى اليوم<b id="pCount">0</b></div>
                     <div class="stat-card">الخزينة (ج.س)<b id="mCount">0</b></div>
                 </div>
-                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                    <button class="btn-act" onclick="openZone('recep')"><i class="fas fa-user-plus"></i> الاستقبال</button>
-                    <button class="btn-act" onclick="openZone('lab')"><i class="fas fa-microscope"></i> المختبر</button>
+                <div class="menu-grid">
+                    <div class="menu-item" onclick="showZ('recep')"><i class="fas fa-id-card"></i>الاستقبال</div>
+                    <div class="menu-item" onclick="showZ('clinic')"><i class="fas fa-user-md"></i>العيادات</div>
+                    <div class="menu-item" onclick="showZ('lab')"><i class="fas fa-vials"></i>المختبر</div>
+                    <div class="menu-item" onclick="showZ('pharm')"><i class="fas fa-pills"></i>الصيدلية</div>
                 </div>
             </div>
 
             <div id="recep" class="zone">
-                <h3>تسجيل المريض</h3>
-                <input type="text" id="name" placeholder="الاسم الكامل">
-                <input type="number" id="fee" placeholder="الرسوم">
-                <input type="tel" id="wa" placeholder="رقم الهاتف">
-                <button class="btn-act" onclick="save()">حفظ وإضافة للخزينة ✅</button>
-                <button class="btn-act" style="background:#888; margin-top:10px;" onclick="goHome()">رجوع</button>
+                <h3><i class="fas fa-user-plus"></i> تسجيل واستقبال</h3>
+                <input type="text" id="patName" placeholder="اسم المريض الرباعي">
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="patAge" placeholder="العمر">
+                    <select id="patGender"><option>ذكر</option><option>أنثى</option></select>
+                </div>
+                <select id="clinicType">
+                    <option>عيادة الباطنية</option>
+                    <option>عيادة الأطفال</option>
+                    <option>عيادة الجراحة</option>
+                    <option>قسم المختبر فقط</option>
+                </select>
+                <input type="number" id="patFee" placeholder="رسوم المقابلة/الفحص">
+                <button class="btn-prime" onclick="saveP()">حفظ وإرسال للعيادة ✅</button>
+                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
             </div>
 
             <div id="lab" class="zone">
-                <h3>نتائج المختبر</h3>
-                <input type="text" id="hb" placeholder="Hemoglobin (Hb)">
-                <input type="text" id="wbc" placeholder="WBCs Count">
-                <button class="btn-act" onclick="doPrint()">طباعة التقرير الرسمي 🖨️</button>
-                <button class="btn-act" style="background:#888; margin-top:10px;" onclick="goHome()">رجوع</button>
+                <h3><i class="fas fa-flask"></i> قسم المختبر الشامل</h3>
+                <label>اختر الفحص المطلوب:</label>
+                <select id="testSelect" onchange="loadTestFields()">
+                    <option value="cbc">صورة دم كاملة (CBC)</option>
+                    <option value="widal">تايفويد (Widal Test)</option>
+                    <option value="malaria">ملاريا (Malaria MP)</option>
+                    <option value="urine">تحليل بول (Urine Analysis)</option>
+                    <option value="rft">وظائف كلى (RFT)</option>
+                    <option value="bg">سكر الدم (Blood Glucose)</option>
+                </select>
+
+                <div id="testFields" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
+                    </div>
+
+                <button class="btn-prime" onclick="printL()">طباعة التقرير الرسمي 🖨️</button>
+                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
+            </div>
+
+            <div id="clinic" class="zone">
+                <h3><i class="fas fa-stethoscope"></i> معاينة الطبيب</h3>
+                <textarea rows="3" placeholder="الشكوى المرضية (Symptom)"></textarea>
+                <textarea rows="3" placeholder="التشخيص (Diagnosis)"></textarea>
+                <textarea rows="3" placeholder="العلاج الموصوف (Treatment)"></textarea>
+                <button class="btn-prime" onclick="alert('تم حفظ المعاينة في ملف المريض ✅')">حفظ الملف الطبي</button>
+                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
+            </div>
+
+            <div id="pharm" class="zone">
+                <h3><i class="fas fa-pills"></i> صيدلية المؤسسة</h3>
+                <table id="medTable">
+                    <thead><tr><th>الدواء</th><th>المخزون</th><th>السعر</th><th>صرف</th></tr></thead>
+                    <tbody>
+                        <tr><td>Amoxicillin</td><td>50</td><td>2500</td><td><button onclick="alert('تم الصرف')">💊</button></td></tr>
+                        <tr><td>Paracetamol</td><td>100</td><td>500</td><td><button onclick="alert('تم الصرف')">💊</button></td></tr>
+                    </tbody>
+                </table>
+                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
             </div>
         </div>
     </div>
 
     <div id="printArea">
-        <div class="p-header">
-            <h1 style="margin:0; color:#0089ba;">Kod Naqi Medical Foundation</h1>
-            <h2 style="margin:5px 0;">مؤسسة كود نقي الطبية</h2>
-            <p>Khartoum - Sudan | الخرطوم - السودان<br>Tel: +249111729111</p>
+        <div style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 10px;">
+            <h1 style="margin:0;">KOD NAQI MEDICAL FOUNDATION</h1>
+            <p>Khartoum, Sudan | Tel: +249111729111</p>
+            <h3>Laboratory Report</h3>
         </div>
-        
-        <div style="display:flex; justify-content: space-between; font-weight:bold;">
-            <span>Patient: <span id="prName"></span></span>
-            <span>Date: <span id="prDate"></span></span>
+        <div style="margin: 20px 0; display:flex; justify-content: space-between;">
+            <span>Name: <b id="prName"></b></span>
+            <span>Date: <b id="prDate"></b></span>
         </div>
-
-        <table class="p-table">
-            <thead><tr style="background:#f2f2f2;"><th>Test</th><th>Result</th><th>Normal Range</th></tr></thead>
+        <table class="report-table">
+            <thead><tr><th>Investigation</th><th>Result</th><th>Normal Range</th></tr></thead>
             <tbody id="prBody"></tbody>
         </table>
-
-        <div class="p-footer">
-            <div style="text-align:center;">
-                <img id="qr" src="" width="100"><br>
-                <small>Scan for Verification</small>
-            </div>
-            <div style="text-align:center; border-top: 1px solid #000; width: 250px;">
-                <p style="margin:5px 0;"><b>Dr. Elsunni Khalid M. Ahmed</b></p>
-                <small>General Director / مدير المؤسسة</small>
-            </div>
+        <div style="margin-top: 50px; text-align: right;">
+            <p>Director: <b>Dr. Elsunni Khalid</b></p>
+            <div id="qrPrint" style="text-align: left;"><img id="qr" src="" width="100"></div>
         </div>
     </div>
 
     <script>
-        let pts = 0; let rev = 0;
-        setTimeout(() => { document.getElementById('splash').style.display='none'; document.getElementById('login-page').style.display='flex'; }, 2500);
+        let countP = 0, money = 0;
 
-        function login() { 
-            if(document.getElementById('passCode').value === "7070") {
-                document.getElementById('login-page').style.display='none';
-                document.getElementById('main-app').style.display='block';
+        // Hide Splash
+        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; 
+            setTimeout(() => document.getElementById('splash').style.display='none', 500); 
+        }, 2000);
+
+        function login() {
+            if(document.getElementById('p').value === "7070") {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
             }
         }
 
-        function openZone(id) { document.getElementById('home').style.display='none'; document.getElementById(id).style.display='block'; }
-        function goHome() { document.querySelectorAll('.zone').forEach(z => z.style.display='none'); document.getElementById('home').style.display='block'; }
+        function showZ(id) { document.getElementById('home').style.display='none'; document.getElementById(id).style.display='block'; if(id==='lab') loadTestFields(); }
+        function goH() { document.querySelectorAll('.zone').forEach(z => z.style.display='none'); document.getElementById('home').style.display='block'; }
 
-        function save() {
-            pts++; rev += parseInt(document.getElementById('fee').value || 0);
-            document.getElementById('pCount').innerText = pts;
-            document.getElementById('mCount').innerText = rev;
-            alert("تم الحفظ وتحديث الحسابات يا دكتور!");
-            goHome();
+        function saveP() {
+            const f = parseInt(document.getElementById('patFee').value || 0);
+            countP++; money += f;
+            document.getElementById('pCount').innerText = countP;
+            document.getElementById('mCount').innerText = money;
+            alert("تم التسجيل وتحديث الخزينة!"); goH();
         }
 
-        function doPrint() {
-            document.getElementById('prName').innerText = document.getElementById('name').value;
+        function loadTestFields() {
+            const t = document.getElementById('testSelect').value;
+            const container = document.getElementById('testFields');
+            let h = "";
+            if(t==='cbc') {
+                h = '<input id="v1" placeholder="Hb (13.5-17.5)"><input id="v2" placeholder="WBCs (4-11k)"><input id="v3" placeholder="Platelets">';
+            } else if(t==='widal') {
+                h = '<select id="v1"><option>Negative</option><option>1/80</option><option>1/160</option></select>';
+            } else if(t==='rft') {
+                h = '<input id="v1" placeholder="Urea"><input id="v2" placeholder="Creatinine">';
+            } else {
+                h = '<input id="v1" placeholder="Enter Result">';
+            }
+            container.innerHTML = h;
+        }
+
+        function printL() {
+            document.getElementById('prName').innerText = document.getElementById('patName').value || "Guest";
             document.getElementById('prDate').innerText = new Date().toLocaleDateString();
-            document.getElementById('prBody').innerHTML = `
-                <tr><td>Hb (Hemoglobin)</td><td><b>${document.getElementById('hb').value}</b></td><td>13.5-17.5 g/dL</td></tr>
-                <tr><td>WBCs Count</td><td><b>${document.getElementById('wbc').value}</b></td><td>4.0-11.0 x10³/µL</td></tr>
-            `;
-            document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=KOD-NAQI-${document.getElementById('name').value}`;
+            const t = document.getElementById('testSelect').value;
+            let rows = "";
+            if(t==='cbc') {
+                rows += `<tr><td>Hemoglobin (Hb)</td><td>${document.getElementById('v1').value}</td><td>13.5 - 17.5 g/dL</td></tr>`;
+                rows += `<tr><td>Total WBCs</td><td>${document.getElementById('v2').value}</td><td>4.0 - 11.0 k/uL</td></tr>`;
+            } else {
+                rows += `<tr><td>${t.toUpperCase()}</td><td>${document.getElementById('v1').value}</td><td>-</td></tr>`;
+            }
+            document.getElementById('prBody').innerHTML = rows;
+            document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=KOD-${Date.now()}`;
             window.print();
         }
     </script>
