@@ -3,232 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مؤسسة كود نقي - النظام الشامل v15</title>
+    <title>مؤسسة كود نقي - النظام الشامل v21</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f4f7f9; --white: #ffffff; --danger: #e74c3c; }
+        :root { --primary: #0089ba; --secondary: #00a896; --danger: #e74c3c; --bg: #f4f7f9; }
         * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); margin: 0; padding: 0; }
-
-        /* Splash Screen */
-        #splash { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.5s; }
-        .logo-img { width: 120px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-
-        /* Main App Structure */
-        #main-app { display: none; }
-        .header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-        .content { padding: 20px; max-width: 1000px; margin: auto; }
-
-        /* Dashboard Stats */
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--white); padding: 20px; border-radius: 20px; text-align: center; border-right: 5px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .stat-card b { font-size: 1.5rem; color: var(--primary); display: block; }
-
-        /* Main Menu */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
-        .menu-item { background: var(--white); padding: 20px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid #eee; }
-        .menu-item i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
-
-        /* Zones */
-        .zone { display: none; background: var(--white); padding: 25px; border-radius: 25px; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #ddd; background: #fafafa; font-size: 1rem; }
-        .btn-prime { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--secondary); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; margin-top: 10px; }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
-        th, td { border: 1px solid #eee; padding: 10px; text-align: center; }
-        th { background: #f8fafb; color: var(--primary); }
-
-        /* Print Area */
-        #printArea { display: none; padding: 20mm; background: white; direction: ltr; }
-        .report-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .report-table th, .report-table td { border: 1px solid #000; padding: 10px; text-align: left; }
-
-        @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { display: block; position: absolute; left: 0; top: 0; width: 100%; }
-        }
+        body { background: var(--bg); margin: 0; padding: 10px; }
+        .zone { background: white; padding: 25px; border-radius: 30px; max-width: 1100px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h3 { border-right: 5px solid var(--primary); padding-right: 15px; color: var(--primary); margin-bottom: 20px; }
+        
+        /* جداول المخزن */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: var(--primary); color: white; padding: 12px; position: sticky; top: 0; }
+        td { padding: 10px; border: 1px solid #eee; text-align: center; }
+        input[type="number"] { width: 60px; padding: 5px; text-align: center; border-radius: 5px; border: 1px solid #ddd; }
+        
+        .low-stock { background: #ffe6e6 !important; color: var(--danger); font-weight: bold; }
+        .btn-wa { background: #25D366; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+        
+        /* المختبر */
+        .lab-section { border: 1px solid #eee; padding: 15px; border-radius: 20px; margin-bottom: 20px; }
+        .lab-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 8px; align-items: center; }
+        .abnormal { border: 2px solid var(--danger) !important; color: var(--danger); }
     </style>
 </head>
 <body>
 
-    <div id="splash">
-        <img src="kod_logo.png" class="logo-img" onerror="this.src='https://via.placeholder.com/150?text=KOD+NAQI'">
-        <h2 style="color:var(--primary); margin-top:20px;">مؤسسة كود نقي الطبية</h2>
-        <p>دقة تداوي.. وثقة تبني</p>
-    </div>
-
-    <div id="login-page" style="display:flex; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: white; padding: 40px; border-radius: 30px; width: 100%; max-width: 380px; text-align: center;">
-            <img src="kod_logo.png" width="80" onerror="this.style.display='none'">
-            <h3>نظام د. السني خالد</h3>
-            <input type="password" id="p" placeholder="كلمة المرور (7070)">
-            <button class="btn-prime" onclick="login()">دخول للنظام</button>
+    <div class="zone">
+        <h3><i class="fas fa-pills"></i> الصيدلية والمخزن الطبي (القائمة الكاملة)</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الصنف (Item Name)</th>
+                        <th>السعر</th>
+                        <th>المتبقي</th>
+                        <th>تنبيه</th>
+                    </tr>
+                </thead>
+                <tbody id="medList">
+                    <tr><td>Amoxicillin 500mg (Cap)</td><td>2500</td><td><input type="number" value="3" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Amoxicillin', 3)">واتساب</button></td></tr>
+                    <tr><td>Azithromycin 500mg</td><td>4200</td><td><input type="number" value="10" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Azithromycin', 10)">واتساب</button></td></tr>
+                    <tr><td>Ceftriaxone 1g (Inj)</td><td>3800</td><td><input type="number" value="4" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Ceftriaxone', 4)">واتساب</button></td></tr>
+                    <tr><td>Paracetamol (Panadol)</td><td>800</td><td><input type="number" value="50" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Paracetamol', 50)">واتساب</button></td></tr>
+                    <tr><td>Metronidazole (Flagyl)</td><td>1200</td><td><input type="number" value="2" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Metronidazole', 2)">واتساب</button></td></tr>
+                    <tr><td>Ciprofloxacin 500mg</td><td>1500</td><td><input type="number" value="15" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Ciprofloxacin', 15)">واتساب</button></td></tr>
+                    
+                    <tr style="background:#f9f9f9;"><td colspan="4"><b>المستلزمات الطبية</b></td></tr>
+                    <tr><td>Syringes 5ml (Box)</td><td>5000</td><td><input type="number" value="5" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Syringes 5ml', 5)">واتساب</button></td></tr>
+                    <tr><td>Cannula (Green/Blue)</td><td>1200</td><td><input type="number" value="20" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Cannula', 20)">واتساب</button></td></tr>
+                    <tr><td>Adhesive Plaster (شريط لاصق)</td><td>900</td><td><input type="number" value="2" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Plaster', 2)">واتساب</button></td></tr>
+                    <tr><td>Cotton / Gauze (قطن وشاش)</td><td>3000</td><td><input type="number" value="1" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Cotton', 1)">واتساب</button></td></tr>
+                    
+                    <tr style="background:#f9f9f9;"><td colspan="4"><b>معدات ومحاليل المختبر</b></td></tr>
+                    <tr><td>Widal Reagents (Set)</td><td>15000</td><td><input type="number" value="2" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Widal Kit', 2)">واتساب</button></td></tr>
+                    <tr><td>Pregnancy Test Strips</td><td>500</td><td><input type="number" value="30" onchange="checkS(this)"></td><td><button class="btn-wa" onclick="sendWA('Pregnancy Strips', 30)">واتساب</button></td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div id="main-app">
-        <div class="header">
-            <b style="color:var(--primary)">KOD NAQI ERP</b>
-            <div style="font-size: 0.8rem; text-align: left;">الخرطوم - السودان</div>
-            <i class="fas fa-power-off" onclick="location.reload()" style="color:red; cursor:pointer"></i>
+    <div class="zone">
+        <h3><i class="fas fa-flask"></i> نتائج المختبر (Urine & Stool)</h3>
+        
+        <div class="lab-section">
+            <h4 style="color:var(--secondary)">Urine Analysis</h4>
+            <div class="lab-grid"><b>Reaction:</b><input placeholder="Acidic"><input placeholder="S.G"></div>
+            <div class="lab-grid"><b>Pus Cells:</b><input type="number" id="upus" oninput="vL(this, 5)"><span style="color:#888">Normal: 0-5</span></div>
+            <div class="lab-grid"><b>R.B.Cs:</b><input type="number" id="urbc" oninput="vL(this, 3)"><span style="color:#888">Normal: 0-3</span></div>
         </div>
 
-        <div class="content">
-            <div id="home">
-                <div class="stats-grid">
-                    <div class="stat-card">مرضى اليوم<b id="pCount">0</b></div>
-                    <div class="stat-card">الخزينة (ج.س)<b id="mCount">0</b></div>
-                </div>
-                <div class="menu-grid">
-                    <div class="menu-item" onclick="showZ('recep')"><i class="fas fa-id-card"></i>الاستقبال</div>
-                    <div class="menu-item" onclick="showZ('clinic')"><i class="fas fa-user-md"></i>العيادات</div>
-                    <div class="menu-item" onclick="showZ('lab')"><i class="fas fa-vials"></i>المختبر</div>
-                    <div class="menu-item" onclick="showZ('pharm')"><i class="fas fa-pills"></i>الصيدلية</div>
-                </div>
-            </div>
-
-            <div id="recep" class="zone">
-                <h3><i class="fas fa-user-plus"></i> تسجيل واستقبال</h3>
-                <input type="text" id="patName" placeholder="اسم المريض الرباعي">
-                <div style="display:flex; gap:10px;">
-                    <input type="number" id="patAge" placeholder="العمر">
-                    <select id="patGender"><option>ذكر</option><option>أنثى</option></select>
-                </div>
-                <select id="clinicType">
-                    <option>عيادة الباطنية</option>
-                    <option>عيادة الأطفال</option>
-                    <option>عيادة الجراحة</option>
-                    <option>قسم المختبر فقط</option>
-                </select>
-                <input type="number" id="patFee" placeholder="رسوم المقابلة/الفحص">
-                <button class="btn-prime" onclick="saveP()">حفظ وإرسال للعيادة ✅</button>
-                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
-            </div>
-
-            <div id="lab" class="zone">
-                <h3><i class="fas fa-flask"></i> قسم المختبر الشامل</h3>
-                <label>اختر الفحص المطلوب:</label>
-                <select id="testSelect" onchange="loadTestFields()">
-                    <option value="cbc">صورة دم كاملة (CBC)</option>
-                    <option value="widal">تايفويد (Widal Test)</option>
-                    <option value="malaria">ملاريا (Malaria MP)</option>
-                    <option value="urine">تحليل بول (Urine Analysis)</option>
-                    <option value="rft">وظائف كلى (RFT)</option>
-                    <option value="bg">سكر الدم (Blood Glucose)</option>
-                </select>
-
-                <div id="testFields" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px;">
-                    </div>
-
-                <button class="btn-prime" onclick="printL()">طباعة التقرير الرسمي 🖨️</button>
-                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
-            </div>
-
-            <div id="clinic" class="zone">
-                <h3><i class="fas fa-stethoscope"></i> معاينة الطبيب</h3>
-                <textarea rows="3" placeholder="الشكوى المرضية (Symptom)"></textarea>
-                <textarea rows="3" placeholder="التشخيص (Diagnosis)"></textarea>
-                <textarea rows="3" placeholder="العلاج الموصوف (Treatment)"></textarea>
-                <button class="btn-prime" onclick="alert('تم حفظ المعاينة في ملف المريض ✅')">حفظ الملف الطبي</button>
-                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
-            </div>
-
-            <div id="pharm" class="zone">
-                <h3><i class="fas fa-pills"></i> صيدلية المؤسسة</h3>
-                <table id="medTable">
-                    <thead><tr><th>الدواء</th><th>المخزون</th><th>السعر</th><th>صرف</th></tr></thead>
-                    <tbody>
-                        <tr><td>Amoxicillin</td><td>50</td><td>2500</td><td><button onclick="alert('تم الصرف')">💊</button></td></tr>
-                        <tr><td>Paracetamol</td><td>100</td><td>500</td><td><button onclick="alert('تم الصرف')">💊</button></td></tr>
-                    </tbody>
-                </table>
-                <button class="btn-prime" style="background:#888; margin-top:10px;" onclick="goH()">رجوع</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="printArea">
-        <div style="text-align:center; border-bottom: 2px solid #000; padding-bottom: 10px;">
-            <h1 style="margin:0;">KOD NAQI MEDICAL FOUNDATION</h1>
-            <p>Khartoum, Sudan | Tel: +249111729111</p>
-            <h3>Laboratory Report</h3>
-        </div>
-        <div style="margin: 20px 0; display:flex; justify-content: space-between;">
-            <span>Name: <b id="prName"></b></span>
-            <span>Date: <b id="prDate"></b></span>
-        </div>
-        <table class="report-table">
-            <thead><tr><th>Investigation</th><th>Result</th><th>Normal Range</th></tr></thead>
-            <tbody id="prBody"></tbody>
-        </table>
-        <div style="margin-top: 50px; text-align: right;">
-            <p>Director: <b>Dr. Elsunni Khalid</b></p>
-            <div id="qrPrint" style="text-align: left;"><img id="qr" src="" width="100"></div>
+        <div class="lab-section">
+            <h4 style="color:var(--secondary)">Stool Analysis</h4>
+            <div class="lab-grid"><b>Amoeba:</b><input placeholder="Nil" id="amoeba" oninput="vT(this)"><span>Troph / Cyst</span></div>
+            <div class="lab-grid"><b>Giardia:</b><input placeholder="Nil" id="giardia" oninput="vT(this)"><span>Troph / Cyst</span></div>
         </div>
     </div>
 
     <script>
-        let countP = 0, money = 0;
-
-        // Hide Splash
-        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; 
-            setTimeout(() => document.getElementById('splash').style.display='none', 500); 
-        }, 2000);
-
-        function login() {
-            if(document.getElementById('p').value === "7070") {
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-            }
+        // تنبيه المخزن بالأحمر
+        function checkS(el) {
+            if(parseInt(el.value) <= 5) el.closest('td').classList.add('low-stock');
+            else el.closest('td').classList.remove('low-stock');
         }
 
-        function showZ(id) { document.getElementById('home').style.display='none'; document.getElementById(id).style.display='block'; if(id==='lab') loadTestFields(); }
-        function goH() { document.querySelectorAll('.zone').forEach(z => z.style.display='none'); document.getElementById('home').style.display='block'; }
-
-        function saveP() {
-            const f = parseInt(document.getElementById('patFee').value || 0);
-            countP++; money += f;
-            document.getElementById('pCount').innerText = countP;
-            document.getElementById('mCount').innerText = money;
-            alert("تم التسجيل وتحديث الخزينة!"); goH();
+        // تنبيه المختبر بالأحمر (أرقام)
+        function vL(el, max) {
+            if(parseInt(el.value) > max) el.classList.add('abnormal');
+            else el.classList.remove('abnormal');
         }
 
-        function loadTestFields() {
-            const t = document.getElementById('testSelect').value;
-            const container = document.getElementById('testFields');
-            let h = "";
-            if(t==='cbc') {
-                h = '<input id="v1" placeholder="Hb (13.5-17.5)"><input id="v2" placeholder="WBCs (4-11k)"><input id="v3" placeholder="Platelets">';
-            } else if(t==='widal') {
-                h = '<select id="v1"><option>Negative</option><option>1/80</option><option>1/160</option></select>';
-            } else if(t==='rft') {
-                h = '<input id="v1" placeholder="Urea"><input id="v2" placeholder="Creatinine">';
-            } else {
-                h = '<input id="v1" placeholder="Enter Result">';
-            }
-            container.innerHTML = h;
+        // تنبيه المختبر بالأحمر (نصوص)
+        function vT(el) {
+            let val = el.value.toLowerCase();
+            if(val != "nil" && val != "negative" && val != "" && val != "none") el.classList.add('abnormal');
+            else el.classList.remove('abnormal');
         }
 
-        function printL() {
-            document.getElementById('prName').innerText = document.getElementById('patName').value || "Guest";
-            document.getElementById('prDate').innerText = new Date().toLocaleDateString();
-            const t = document.getElementById('testSelect').value;
-            let rows = "";
-            if(t==='cbc') {
-                rows += `<tr><td>Hemoglobin (Hb)</td><td>${document.getElementById('v1').value}</td><td>13.5 - 17.5 g/dL</td></tr>`;
-                rows += `<tr><td>Total WBCs</td><td>${document.getElementById('v2').value}</td><td>4.0 - 11.0 k/uL</td></tr>`;
-            } else {
-                rows += `<tr><td>${t.toUpperCase()}</td><td>${document.getElementById('v1').value}</td><td>-</td></tr>`;
-            }
-            document.getElementById('prBody').innerHTML = rows;
-            document.getElementById('qr').src = `https://api.qrserver.com/v1/create-qr-code/?data=KOD-${Date.now()}`;
-            window.print();
+        function sendWA(item, qty) {
+            let msg = `تنبيه طلبية: الصنف (${item}) قارب على الانتهاء. المتبقي: ${qty}. يرجى التوفير عاجلاً. مؤسسة كود نقي.`;
+            window.open(`https://wa.me/249111729111?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // تشغيل الفحص عند التحميل
+        window.onload = function() {
+            document.querySelectorAll('input[type="number"]').forEach(i => checkS(i));
         }
     </script>
 </body>
