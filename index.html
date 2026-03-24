@@ -3,55 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام كود نقي - الإصدار المعتمد</title>
+    <title>مؤسسة كود نقي الطبية - النظام المتكامل</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f8fafb; --white: #ffffff; --text: #2c3e50; }
-        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; transition: 0.3s; }
-        body { background: var(--bg); margin: 0; overflow-x: hidden; }
+        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f4f7f6; --white: #ffffff; --text: #2c3e50; --danger: #e74c3c; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); margin: 0; overflow-x: hidden; color: var(--text); }
 
-        /* شاشة الإقلاع */
-        #splash { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .logo-anime { width: 140px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        .loader-bar { width: 180px; height: 4px; background: #eee; border-radius: 10px; margin-top: 20px; overflow: hidden; }
-        .fill { width: 0; height: 100%; background: var(--primary); animation: load 3s forwards; }
+        /* 1. شاشة الإقلاع (Splash Screen) */
+        #splash { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s ease-in-out; }
+        .logo-anime { width: 150px; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .loader-bar { width: 200px; height: 4px; background: #eee; border-radius: 10px; margin-top: 20px; overflow: hidden; }
+        .loader-fill { width: 0%; height: 100%; background: var(--primary); animation: load 3s forwards; }
         @keyframes load { to { width: 100%; } }
 
-        /* شاشة الدخول */
+        /* 2. شاشة تسجيل الدخول */
         #login-page { display: none; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--white); padding: 40px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .login-box { background: var(--white); padding: 40px; border-radius: 30px; width: 100%; max-width: 420px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
 
-        /* النظام الرئيسي */
-        #main-app { display: none; }
-        .nav-header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 900; }
+        /* 3. الهيكل الرئيسي Dashboard */
+        #main-system { display: none; }
+        .nav-header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); sticky: top; }
         
-        .sidebar { position: fixed; right: -280px; top: 0; width: 280px; height: 100%; background: var(--white); z-index: 2000; box-shadow: -5px 0 15px rgba(0,0,0,0.1); padding-top: 20px; }
+        .sidebar { position: fixed; right: -280px; top: 0; width: 280px; height: 100%; background: var(--white); z-index: 999; box-shadow: -5px 0 15px rgba(0,0,0,0.05); transition: 0.3s; padding-top: 20px; }
         .sidebar.active { right: 0; }
-        .nav-link { padding: 15px 25px; display: block; color: var(--text); text-decoration: none; border-bottom: 1px solid #f9f9f9; }
-        .nav-link i { margin-left: 10px; color: var(--primary); }
+        .nav-item { padding: 15px 25px; display: flex; align-items: center; color: var(--text); text-decoration: none; border-bottom: 1px solid #f9f9f9; }
+        .nav-item i { margin-left: 15px; color: var(--primary); }
 
-        .content { padding: 20px; max-width: 800px; margin: auto; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-box { background: var(--white); padding: 20px; border-radius: 20px; border-right: 5px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .content { padding: 20px; max-width: 1100px; margin: auto; }
+        .grid-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 20px; }
         .menu-card { background: var(--white); padding: 25px; border-radius: 25px; text-align: center; cursor: pointer; border: 1px solid #eee; }
-        .menu-card i { font-size: 2rem; color: var(--primary); margin-bottom: 15px; display: block; }
+        .menu-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block; }
 
-        .work-zone { display: none; background: var(--white); padding: 25px; border-radius: 30px; margin-top: 20px; animation: slideUp 0.4s; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        /* الأقسام (Work Zones) */
+        .work-zone { display: none; background: var(--white); border-radius: 30px; padding: 25px; margin-top: 20px; animation: slideUp 0.4s; }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } }
-        
-        input, select { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #eee; background: #f9f9f9; font-size: 1rem; outline: none; }
-        input:focus { border-color: var(--primary); }
-        .btn-act { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--secondary); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-        .whatsapp-btn { background: #25D366; margin-top: 10px; }
 
-        /* الطباعة A4 */
-        #printArea { display: none; padding: 20mm; background: white; }
-        @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { display: block; position: absolute; left: 0; top: 0; width: 100%; } }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #eee; background: #f9f9f9; font-size: 1rem; outline: none; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--secondary); color: white; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        
+        /* جدول الصيدلية */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .data-table th, .data-table td { padding: 12px; border: 1px solid #eee; text-align: center; }
+        .data-table th { background: var(--primary); color: white; }
+
+        /* منطقة الطباعة A4 */
+        #printArea { display: none; padding: 15mm; background: white; color: black; }
+        .lab-table { width: 100%; border-collapse: collapse; direction: ltr; } /* الإنجليزية للفحوصات */
+        .lab-table th, .lab-table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
     </style>
 </head>
 <body>
@@ -59,154 +61,173 @@
     <div id="splash">
         <img src="kod_logo.png" class="logo-anime" onerror="this.src='https://via.placeholder.com/150'">
         <h2 style="color: var(--primary)">مؤسسة كود نقي</h2>
-        <div class="loader-bar"><div class="fill"></div></div>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
     </div>
 
     <div id="login-page">
-        <div class="login-card">
+        <div class="login-box">
             <img src="kod_logo.png" width="90" style="margin-bottom: 20px;">
-            <h3>بوابة الدخول الآمن</h3>
-            <input type="password" id="passCode" placeholder="أدخل كلمة المرور">
-            <button class="btn-act" onclick="login()">دخول للنظام</button>
-            <p id="errMsg" style="color: red; margin-top: 10px; font-size: 0.8rem;"></p>
+            <h3>تسجيل دخول الموظفين</h3>
+            <input type="password" id="passCode" placeholder="كلمة المرور">
+            <button class="btn-main" onclick="handleLogin()">دخول آمن</button>
+            <p id="loginError" style="color: var(--danger); font-size: 0.8rem; margin-top: 10px;"></p>
         </div>
     </div>
 
-    <div id="main-app">
-        <div class="sidebar" id="sidebar">
-            <div style="text-align: center; padding: 20px; border-bottom: 1px solid #eee;">
-                <img src="kod_logo.png" width="60">
-                <h4 id="uName" style="margin:10px 0">د. السني خالد</h4>
-                <small style="color: var(--secondary)">مدير النظام</small>
-            </div>
-            <a href="javascript:goHome()" class="nav-link"><i class="fas fa-home"></i> الرئيسية</a>
-            <a href="javascript:logout()" class="nav-link" style="color: #e74c3c; margin-top: 50px;"><i class="fas fa-power-off"></i> تسجيل الخروج</a>
-        </div>
-
+    <div id="main-system">
         <div class="nav-header">
-            <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size: 1.5rem; color: var(--primary); cursor:pointer;"></i>
-            <img src="kod_logo.png" height="35">
-            <div style="width:20px"></div>
+            <i class="fas fa-bars" onclick="toggleSidebar()" style="font-size: 1.5rem; cursor:pointer;"></i>
+            <img src="kod_logo.png" height="40">
+            <i class="fas fa-power-off" onclick="logout()" style="color: var(--danger); cursor:pointer;"></i>
         </div>
 
-        <div class="content">
-            <div id="home-screen">
-                <h3>لوحة التحكم المركزية</h3>
-                <div class="stats-grid">
-                    <div class="stat-box"><b>120</b><br><small>إجمالي المرضى</small></div>
-                    <div class="stat-box" style="border-right-color: #f1c40f;"><b>12</b><br><small>مواعيد اليوم</small></div>
-                </div>
-                <div class="menu-grid">
-                    <div class="menu-card" onclick="openWork('pharmacy')"><i class="fas fa-pills"></i>الصيدلية</div>
-                    <div class="menu-card" onclick="openWork('lab')"><i class="fas fa-microscope"></i>المختبر</div>
-                    <div class="menu-card" onclick="openWork('reception')"><i class="fas fa-user-plus"></i>الاستقبال</div>
-                    <div class="menu-card" onclick="openWork('hr')"><i class="fas fa-chart-line"></i>الإدارة</div>
-                </div>
+        <div class="sidebar" id="sidebar">
+            <div style="text-align:center; padding: 20px; border-bottom: 1px solid #eee;">
+                <img src="kod_logo.png" width="70">
+                <h4 id="userDisplayName">د. السني</h4>
             </div>
+            <a href="javascript:showHome()" class="nav-item"><i class="fas fa-home"></i> الرئيسية</a>
+            <a href="javascript:logout()" class="nav-item" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i> خروج</a>
+        </div>
 
-            <div id="pharmacy" class="work-zone">
-                <h3><i class="fas fa-barcode"></i> مسح الدواء</h3>
-                <div id="reader"></div>
-                <input type="text" id="m_name" placeholder="اسم الدواء">
-                <input type="number" id="m_price" placeholder="سعر البيع">
-                <button class="btn-act" onclick="sendToGoogle()">تحديث السحابة ☁️</button>
-                <button class="btn-act" style="background: #95a5a6; margin-top: 10px;" onclick="goHome()">رجوع</button>
+        <div class="content" id="home-screen">
+            <h2>مرحباً بك في كود نقي</h2>
+            <div class="grid-menu">
+                <div class="menu-card" id="card-recep" onclick="openZone('reception')"><i class="fas fa-user-plus"></i>الاستقبال</div>
+                <div class="menu-card" id="card-pharm" onclick="openZone('pharmacy')"><i class="fas fa-pills"></i>الصيدلية</div>
+                <div class="menu-card" id="card-lab" onclick="openZone('lab')"><i class="fas fa-microscope"></i>المختبر</div>
+                <div class="menu-card" id="card-admin" onclick="openZone('admin')"><i class="fas fa-user-shield"></i>الإدارة</div>
             </div>
+        </div>
 
-            <div id="lab" class="work-zone">
-                <h3><i class="fas fa-file-medical"></i> نتائج الفحوصات</h3>
-                <input type="text" id="p_name" placeholder="اسم المريض">
-                <input type="tel" id="p_phone" placeholder="رقم الواتساب (مثال: 2499...)">
-                <select id="p_test"><option>فحص دم شامل CBC</option><option>ملاريا / تايفويد</option></select>
-                <button class="btn-act" onclick="printA4()">طباعة التقرير A4</button>
-                <button class="btn-act whatsapp-btn" onclick="sendWhatsapp()">
-                    <i class="fab fa-whatsapp"></i> إرسال النتيجة عبر واتساب
-                </button>
-                <button class="btn-act" style="background: #95a5a6; margin-top: 10px;" onclick="goHome()">رجوع</button>
+        <div id="reception" class="work-zone">
+            <h3><i class="fas fa-user-edit"></i> تسجيل مريض جديد</h3>
+            <input type="text" id="pat_name" placeholder="اسم المريض بالكامل">
+            <input type="number" id="pat_age" placeholder="العمر">
+            <select id="pat_gender"><option>ذكر</option><option>أنثى</option></select>
+            <textarea id="pat_note" placeholder="ملاحظات المريض..."></textarea>
+            <button class="btn-main" onclick="savePatient()">حفظ المريض وحجز موعد</button>
+            <button class="btn-main" style="background:#95a5a6; margin-top:10px;" onclick="showHome()">رجوع</button>
+        </div>
+
+        <div id="pharmacy" class="work-zone">
+            <h3><i class="fas fa-box-open"></i> مخزون الأدوية الحي</h3>
+            <div style="overflow-x:auto;">
+                <table class="data-table" id="medTable">
+                    <thead><tr><th>الدواء</th><th>الكمية</th><th>السعر</th></tr></thead>
+                    <tbody id="medBody"><tr><td colspan="3">جاري جلب البيانات...</td></tr></tbody>
+                </table>
             </div>
+            <hr>
+            <h4>إضافة دواء جديد</h4>
+            <div id="reader"></div>
+            <input type="text" id="new_med_name" placeholder="اسم الدواء">
+            <input type="number" id="new_med_qty" placeholder="الكمية">
+            <button class="btn-main" onclick="addMedicine()">تحديث المخزون ☁️</button>
+            <button class="btn-main" style="background:#95a5a6; margin-top:10px;" onclick="showHome()">رجوع</button>
+        </div>
+
+        <div id="lab" class="work-zone">
+            <h3>إدخال نتائج الفحوصات</h3>
+            <input type="text" id="lab_pat_name" placeholder="اسم المريض">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <input type="text" id="val_hb" placeholder="Hb (الهيموجلوبين)">
+                <input type="text" id="val_wbc" placeholder="WBCs (خلايا الدم البيضاء)">
+                <input type="text" id="val_mal" placeholder="Malaria (MP)">
+            </div>
+            <button class="btn-main" onclick="generateReport()">إصدار تقرير A4 المعتمد</button>
+            <button class="btn-main" style="background:#95a5a6; margin-top:10px;" onclick="showHome()">رجوع</button>
         </div>
     </div>
 
     <div id="printArea">
-        <center>
+        <div style="text-align:center;">
             <img src="kod_logo.png" width="100">
-            <h1 style="color:#0089ba">مؤسسة كود نقي الطبية</h1>
-            <p>تقرير طبي معتمد</p>
-            <hr>
-        </center>
-        <div style="font-size: 1.4rem; line-height: 2.5; margin-top: 30px;">
-            <p>السيد/ة: <span id="pr_name" style="font-weight:bold"></span></p>
-            <p>نوع الفحص: <span id="pr_test"></span></p>
-            <p>تاريخ الفحص: <span id="pr_date"></span></p>
-            <div style="height: 200px; border: 1px solid #eee; padding: 20px;">النتيجة: ..............................</div>
+            <h1 style="color:var(--primary); margin:5px;">مؤسسة كود نقي الطبية</h1>
+            <p>Laboratoty Report / تقرير مختبر</p>
         </div>
-        <div style="margin-top: 50px; text-align: left;">
-            <div style="border: 3px double red; color: red; display: inline-block; padding: 10px; transform: rotate(-10deg); font-weight: bold;">
-                كود نقي - APPROVED
-            </div>
+        <div style="margin: 20px 0; border-bottom: 2px solid #333; padding-bottom: 10px;">
+            <p>Patient Name: <b id="pr_name"></b> | Date: <span id="pr_date"></span></p>
+        </div>
+        <table class="lab-table">
+            <thead><tr style="background:#eee;"><th>Investigation</th><th>Result</th><th>Normal Range</th></tr></thead>
+            <tbody id="pr_body">
+                </tbody>
+        </table>
+        <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+            <div style="border: 2px solid red; color: red; padding: 5px; transform: rotate(-10deg); font-weight: bold;">Verified by Kod Naqi</div>
+            <div>Sign: ........................</div>
         </div>
     </div>
 
     <script>
         const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxzCyw6e8EExq_yFDWGKjc9lZRFrSSDmRFGY_ZStO7Tk8-jundzht5X1FAgS4qfbCuj/exec";
 
-        setTimeout(() => { 
-            document.getElementById('splash').style.display = 'none'; 
-            document.getElementById('login-page').style.display = 'flex'; 
+        // شاشة الإقلاع
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
         }, 3000);
 
-        function login() {
+        function handleLogin() {
             const pass = document.getElementById('passCode').value;
-            const users = { "7070": "د. السني خالد", "5050": "الصيدلي", "4040": "المختبر" };
-            if(users[pass]) {
+            const users = { "7070": "مدير عام", "5050": "صيدلي", "4040": "فني مختبر", "3030": "استقبال" };
+            if (users[pass]) {
                 document.getElementById('login-page').style.display = 'none';
-                document.getElementById('main-app').style.display = 'block';
-                document.getElementById('uName').innerText = users[pass];
-            } else { document.getElementById('errMsg').innerText = "كود الدخول خاطئ!"; }
-        }
-
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function goHome() { 
-            document.querySelectorAll('.work-zone').forEach(z => z.style.display = 'none'); 
-            document.getElementById('home-screen').style.display = 'block'; 
-        }
-
-        function openWork(id) {
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById(id).style.display = 'block';
-            if(id === 'pharmacy') {
-                const scanner = new Html5Qrcode("reader");
-                scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, (txt) => {
-                    document.getElementById('m_name').value = txt;
-                    alert("تم مسح الكود بنجاح!");
-                });
+                document.getElementById('main-system').style.display = 'block';
+                document.getElementById('userDisplayName').innerText = users[pass];
+                applyPermissions(pass);
+            } else {
+                document.getElementById('loginError').innerText = "خطأ في كلمة المرور!";
             }
         }
 
-        function logout() { if(confirm("هل تريد الخروج؟")) location.reload(); }
+        function applyPermissions(pass) {
+            // إخفاء الأقسام حسب الصلاحية
+            const cards = ["card-recep", "card-pharm", "card-lab", "card-admin"];
+            if(pass === "3030") cards.filter(c => c !== "card-recep").forEach(c => document.getElementById(c).style.display='none');
+            if(pass === "5050") cards.filter(c => c !== "card-pharm").forEach(c => document.getElementById(c).style.display='none');
+            if(pass === "4040") cards.filter(c => c !== "card-lab").forEach(c => document.getElementById(c).style.display='none');
+        }
 
-        function printA4() {
-            document.getElementById('pr_name').innerText = document.getElementById('p_name').value;
-            document.getElementById('pr_test').innerText = document.getElementById('p_test').value;
-            document.getElementById('pr_date').innerText = new Date().toLocaleDateString('ar-EG');
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function showHome() { 
+            document.querySelectorAll('.work-zone').forEach(z => z.style.display = 'none');
+            document.getElementById('home-screen').style.display = 'block';
+        }
+
+        function openZone(id) {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById(id).style.display = 'block';
+            if(id === 'pharmacy') loadPharmacy();
+        }
+
+        async function loadPharmacy() {
+            // جلب البيانات من Google Sheet (تتطلب doGet في السكريبت)
+            const resp = await fetch(CLOUD_URL + "?action=getInventory");
+            // هذا الجزء يحتاج تنسيق مع كود السكريبت الخاص بك
+        }
+
+        function generateReport() {
+            const name = document.getElementById('lab_pat_name').value;
+            document.getElementById('pr_name').innerText = name;
+            document.getElementById('pr_date').innerText = new Date().toLocaleDateString();
+            
+            const results = [
+                {test: "Hemoglobin (Hb)", val: document.getElementById('val_hb').value, range: "13 - 17 g/dL"},
+                {test: "WBCs Count", val: document.getElementById('val_wbc').value, range: "4,000 - 11,000"},
+                {test: "Malaria (MP)", val: document.getElementById('val_mal').value, range: "Negative"}
+            ];
+
+            let html = "";
+            results.forEach(r => {
+                html += `<tr><td>${r.test}</td><td><b>${r.val}</b></td><td>${r.range}</td></tr>`;
+            });
+            document.getElementById('pr_body').innerHTML = html;
             window.print();
         }
 
-        function sendWhatsapp() {
-            const name = document.getElementById('p_name').value;
-            const phone = document.getElementById('p_phone').value;
-            const test = document.getElementById('p_test').value;
-            if(!phone) return alert("يرجى إدخال رقم الواتساب");
-            const msg = `مرحباً ${name}، نود إعلامك بأن نتيجة فحص (${test}) من مؤسسة كود نقي جاهزة الآن. يمكنك استلامها من المركز. مع تمنياتنا لك بالشفاء.`;
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        async function sendToGoogle() {
-            const data = { name: document.getElementById('m_name').value, price: document.getElementById('m_price').value, type: 'صيدلية' };
-            await fetch(CLOUD_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-            alert("تم التحديث السحابي بنجاح! ✅");
-            goHome();
-        }
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
