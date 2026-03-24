@@ -3,146 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بوابة كود نقي الطبية</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>نظام كود نقي المتكامل</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
-        :root { --main: #0089ba; --grad: linear-gradient(135deg, #0089ba 0%, #00a896 100%); --white: #ffffff; }
-        body { font-family: 'Tajawal', sans-serif; background: #f0f4f8; margin: 0; overflow-x: hidden; }
+        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f8fafb; --white: #ffffff; --text: #2c3e50; }
+        * { box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body { background: var(--bg); margin: 0; overflow-x: hidden; }
 
-        /* شاشة الدخول المشفرة */
-        #loginOverlay { position: fixed; inset: 0; background: var(--grad); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: var(--white); padding: 40px 30px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .login-card img { width: 100px; margin-bottom: 20px; }
+        /* شاشة التحميل الملكية */
+        #splash { position: fixed; inset: 0; background: var(--white); z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s; }
+        .logo-pulse { width: 140px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        /* الواجهة الرئيسية */
-        .app-container { display: none; }
-        .nav-bar { background: var(--white); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        /* شاشة الدخول */
+        #login-page { display: none; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: var(--white); padding: 40px; border-radius: 30px; width: 100%; max-width: 400px; text-align: center; }
+
+        /* الهيكل الرئيسي */
+        #main-app { display: none; padding-bottom: 70px; }
+        .header-nav { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
         
-        /* تقسيم الأقسام */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
-        .section-card { background: var(--white); padding: 25px; border-radius: 25px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid #eee; }
-        .section-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .section-card i { font-size: 2.5rem; background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 15px; }
+        .content { padding: 20px; max-width: 1200px; margin: auto; }
+        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
+        .menu-item { background: var(--white); padding: 25px; border-radius: 25px; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid #f0f0f0; }
+        .menu-item i { font-size: 2.2rem; margin-bottom: 15px; display: block; color: var(--primary); }
 
-        /* منطقة العمل */
-        .workspace { padding: 20px; display: none; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* نوافذ العمل */
+        .work-zone { display: none; background: var(--white); border-radius: 30px; padding: 25px; margin-top: 20px; animation: slideIn 0.4s; }
+        @keyframes slideIn { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        input, select { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #e1e8ef; border-radius: 15px; background: #f8fafc; font-family: 'Tajawal'; }
-        .primary-btn { width: 100%; padding: 15px; border: none; border-radius: 15px; background: var(--grad); color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; }
-        
-        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 20px; background: #e0f2f1; color: #00796b; font-size: 0.8rem; margin-top: 5px; }
+        input, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #eee; background: #f9f9f9; }
+        .btn-main { width: 100%; padding: 15px; border: none; border-radius: 12px; background: var(--secondary); color: white; font-weight: bold; cursor: pointer; }
+
+        /* منطقة الطباعة A4 */
+        #printArea { display: none; padding: 20mm; background: white; color: black; }
+        .report-header { border-bottom: 3px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .stamp { width: 120px; border: 3px double red; color: red; text-align: center; transform: rotate(-15deg); font-weight: bold; padding: 5px; opacity: 0.7; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { display: block; position: absolute; left: 0; top: 0; width: 100%; }
+        }
+
+        /* ستايل الكاميرا */
+        #reader { width: 100%; border-radius: 20px; overflow: hidden; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="loginOverlay">
+    <div id="splash">
+        <img src="kod_logo.png" class="logo-pulse" onerror="this.src='https://via.placeholder.com/140'">
+        <h3 style="color: var(--primary);">مؤسسة كود نقي الطبية</h3>
+        <p>جاري تهيئة النظام السحابي...</p>
+    </div>
+
+    <div id="login-page">
         <div class="login-card">
-            <img src="kod_logo.png" onerror="this.src='https://via.placeholder.com/100'">
-            <h2 style="color: var(--main); margin: 0;">نظام كود نقي</h2>
-            <p style="color: #666; font-size: 0.9rem; margin-bottom: 30px;">يرجى تسجيل الدخول للمتابعة</p>
-            <input type="password" id="passCode" placeholder="أدخل كلمة المرور الخاصة بك">
-            <button class="primary-btn" onclick="checkAuth()">دخول آمن</button>
-            <p id="err" style="color: red; font-size: 0.8rem; margin-top: 10px;"></p>
+            <img src="kod_logo.png" width="90" style="margin-bottom: 20px;">
+            <h3>تسجيل دخول آمن</h3>
+            <input type="password" id="passCode" placeholder="أدخل كلمة المرور">
+            <button class="btn-main" onclick="checkAuth()">دخول</button>
+            <p id="error" style="color: red; margin-top: 10px;"></p>
         </div>
     </div>
 
-    <div class="app-container" id="mainApp">
-        <div class="nav-bar">
-            <div>
-                <b id="userName">د. السني خالد</b><br>
-                <span class="status-badge">المدير العام</span>
-            </div>
-            <img src="kod_logo.png" height="40">
+    <div id="main-app">
+        <div class="header-nav">
+            <i class="fas fa-bars" style="font-size: 1.4rem;"></i>
+            <img src="kod_logo.png" height="35">
+            <span id="roleLabel" style="font-size: 0.8rem; background: #e0f2f1; padding: 5px 10px; border-radius: 10px;">مدير</span>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="section-card" onclick="openWork('pharmacy')">
-                <i class="fas fa-pills"></i>
-                <h3>الصيدلية</h3>
-            </div>
-            <div class="section-card" onclick="openWork('lab')">
-                <i class="fas fa-microscope"></i>
-                <h3>المختبر</h3>
-            </div>
-            <div class="section-card" onclick="openWork('hr')">
-                <i class="fas fa-users-cog"></i>
-                <h3>الإدارة</h3>
-            </div>
-            <div class="section-card" onclick="openWork('ai')">
-                <i class="fas fa-brain"></i>
-                <h3>الذكاء الاصطناعي</h3>
+        <div class="content" id="home-screen">
+            <h3>لوحة التحكم</h3>
+            <div class="grid-menu">
+                <div class="menu-item" onclick="openSection('pharmacy')"><i class="fas fa-pills"></i>صيدلية</div>
+                <div class="menu-item" onclick="openSection('lab')"><i class="fas fa-vial"></i>مختبر</div>
+                <div class="menu-item" onclick="openSection('hr')"><i class="fas fa-users"></i>إدارة</div>
+                <div class="menu-item" onclick="openSection('ai')"><i class="fas fa-robot"></i>استشارة AI</div>
             </div>
         </div>
 
-        <div id="pharmacy" class="workspace">
-            <div style="background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                <h3 style="color: var(--main);"><i class="fas fa-plus"></i> إدارة المخزون الدوائي</h3>
-                <input type="text" id="medName" placeholder="اسم الدواء (مثلاً: أموكسيسيلين)">
-                <input type="number" id="medPrice" placeholder="سعر البيع">
-                <input type="number" id="medQty" placeholder="الكمية المتوفرة">
-                <button class="primary-btn" onclick="sendData()">تحديث السحابة ☁️</button>
-                <button class="primary-btn" style="background: #34495e; margin-top: 10px;" onclick="backHome()">العودة للرئيسية</button>
-            </div>
+        <div id="pharmacy" class="work-zone">
+            <h3><i class="fas fa-barcode"></i> صرف دواء / تحديث مخزون</h3>
+            <div id="reader"></div> <input type="text" id="med_name" placeholder="اسم الدواء">
+            <input type="number" id="med_price" placeholder="السعر">
+            <button class="btn-main" onclick="saveToCloud()">حفظ في السحابة ☁️</button>
+            <button class="btn-main" style="background: #95a5a6; margin-top: 10px;" onclick="goBack()">رجوع</button>
         </div>
 
-        <div id="lab" class="workspace">
-            <div style="background: white; padding: 25px; border-radius: 30px;">
-                <h3 style="color: var(--main);"><i class="fas fa-file-medical"></i> إصدار نتائج فحص A4</h3>
-                <input type="text" id="patName" placeholder="اسم المريض الرباعي">
-                <select id="testType">
-                    <option>فحص دم شامل (CBC)</option>
-                    <option>وظائف كلى</option>
-                    <option>ملاريا / تايفويد</option>
-                </select>
-                <button class="primary-btn" onclick="alert('جاري توليد تقرير A4 المعتمد...')">معاينة التقرير والطباعة</button>
-                <button class="primary-btn" style="background: #34495e; margin-top: 10px;" onclick="backHome()">إلغاء</button>
+        <div id="lab" class="work-zone">
+            <h3>إصدار تقرير فحص</h3>
+            <input type="text" id="p_name" placeholder="اسم المريض">
+            <select id="p_test">
+                <option>فحص دم شامل CBC</option>
+                <option>وظائف كلى</option>
+                <option>ملاريا</option>
+            </select>
+            <button class="btn-main" onclick="printReport()">طباعة تقرير A4 معتمد</button>
+            <button class="btn-main" style="background: #95a5a6; margin-top: 10px;" onclick="goBack()">رجوع</button>
+        </div>
+    </div>
+
+    <div id="printArea">
+        <div class="report-header">
+            <img src="kod_logo.png" style="width: 100px;">
+            <div style="text-align: left;">
+                <h1 style="margin: 0; color: #0089ba;">مؤسسة كود نقي الطبية</h1>
+                <p>التقرير الطبي المعتمد</p>
             </div>
+        </div>
+        <div style="margin-top: 40px; font-size: 1.2rem;">
+            <p>اسم المريض: <span id="r_name" style="font-weight: bold;"></span></p>
+            <p>نوع الفحص: <span id="r_test"></span></p>
+            <p>التاريخ: <span id="r_date"></span></p>
+            <div style="height: 250px; border: 1px solid #ddd; padding: 20px; margin-top: 20px;">النتيجة التفصيلية:</div>
+        </div>
+        <div style="margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end;">
+            <img id="r_qr" src="" style="width: 120px;">
+            <div class="stamp">كود نقي<br>APPROVED</div>
         </div>
     </div>
 
     <script>
-        const CLOUD_URL = "https://script.google.com/macros/s/AKfycbxzCyw6e8EExq_yFDWGKjc9lZRFrSSDmRFGY_ZStO7Tk8-jundzht5X1FAgS4qfbCuj/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxzCyw6e8EExq_yFDWGKjc9lZRFrSSDmRFGY_ZStO7Tk8-jundzht5X1FAgS4qfbCuj/exec";
+
+        // شاشة الإقلاع 3 ثواني
+        setTimeout(() => {
+            document.getElementById('splash').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
+        }, 3000);
 
         function checkAuth() {
             const pass = document.getElementById('passCode').value;
-            // يمكنك تغيير كلمات المرور لكل موظف هنا
-            if(pass === "7070") {
-                document.getElementById('loginOverlay').style.display = 'none';
-                document.getElementById('mainApp').style.display = 'block';
+            const roles = { "7070": "المدير العام", "5050": "الصيدلي", "4040": "المختبر" };
+            if(roles[pass]) {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-app').style.display = 'block';
+                document.getElementById('roleLabel').innerText = roles[pass];
             } else {
-                document.getElementById('err').innerText = "كلمة المرور غير صحيحة يا دكتور!";
+                document.getElementById('error').innerText = "كلمة المرور غير صحيحة";
             }
         }
 
-        function openWork(id) {
-            document.querySelectorAll('.workspace').forEach(w => w.style.display = 'none');
-            document.querySelector('.dashboard-grid').style.display = 'none';
+        function openSection(id) {
+            document.getElementById('home-screen').style.display = 'none';
             document.getElementById(id).style.display = 'block';
+            if(id === 'pharmacy') startScanner();
         }
 
-        function backHome() {
-            document.querySelectorAll('.workspace').forEach(w => w.style.display = 'none');
-            document.querySelector('.dashboard-grid').style.display = 'grid';
+        function goBack() {
+            document.querySelectorAll('.work-zone').forEach(z => z.style.display = 'none');
+            document.getElementById('home-screen').style.display = 'block';
         }
 
-        async function sendData() {
-            const name = document.getElementById('medName').value;
-            const price = document.getElementById('medPrice').value;
-            const qty = document.getElementById('medQty').value;
-            
-            if(!name || !price) return alert("الرجاء ملء الخانات");
-
-            // جاري الإرسال لجوجل شيت الذي صورته
-            fetch(CLOUD_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ name: name, type: 'صيدلية', price: price, quantity: qty })
-            }).then(() => {
-                alert("تم تحديث قاعدة بيانات كود نقي بنجاح! ✅");
-                backHome();
+        // تشغيل كاميرا الباركود
+        function startScanner() {
+            const html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
+            (decodedText) => {
+                document.getElementById('med_name').value = decodedText;
+                alert("تم التعرف على الكود: " + decodedText);
             });
+        }
+
+        function printReport() {
+            const name = document.getElementById('p_name').value;
+            const test = document.getElementById('p_test').value;
+            document.getElementById('r_name').innerText = name;
+            document.getElementById('r_test').innerText = test;
+            document.getElementById('r_date').innerText = new Date().toLocaleDateString('ar-EG');
+            document.getElementById('r_qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=VERIFIED-${name}`;
+            window.print();
+        }
+
+        async function saveToCloud() {
+            const data = {
+                name: document.getElementById('med_name').value,
+                price: document.getElementById('med_price').value,
+                type: 'صيدلية'
+            };
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+            alert("تم التحديث بنجاح ✅");
+            goBack();
         }
     </script>
 </body>
