@@ -1,0 +1,21 @@
+{
+  "name": "مؤسسة كود نقي",
+  "short_name": "كود نقي",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#e1f5fe",
+  "theme_color": "#0089ba",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
