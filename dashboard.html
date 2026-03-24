@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم كود نقي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --white: #ffffff;
+            --success: #27ae60;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            margin: 0; background: var(--light);
+            display: flex; height: 100vh;
+        }
+
+        /* القائمة الجانبية المستوحاة من تصميمك */
+        .sidebar {
+            width: 260px;
+            background: var(--white);
+            border-left: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+        }
+
+        .profile-section {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        .profile-img {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin: 0 auto 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 2rem;
+        }
+
+        .nav-menu { flex-grow: 1; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 10px;
+            transition: 0.3s;
+            font-weight: 500;
+        }
+
+        .nav-item i { margin-left: 15px; width: 20px; text-align: center; }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover { background: #e74c3c; color: white; }
+
+        /* المحتوى الرئيسي */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .stat-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+        
+        /* زر إضافة موظف */
+        .btn-add {
+            background: var(--success);
+            color: white; border: none;
+            padding: 10px 20px; border-radius: 8px;
+            cursor: pointer; font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="profile-section">
+            <div class="profile-img">س</div>
+            <h3>د. السني خالد</h3>
+            <p style="font-size: 0.8rem; color: #888;">مدير النظام</p>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active"><i class="fas fa-th-large"></i> لوحة التحكم</a>
+            <a href="#" class="nav-item"><i class="fas fa-user-injured"></i> المرضى</a>
+            <a href="#" class="nav-item"><i class="fas fa-pills"></i> الصيدلية</a>
+            <a href="#" class="nav-item"><i class="fas fa-flask"></i> المختبر</a>
+            <a href="#" class="nav-item"><i class="fas fa-users"></i> الموارد البشرية</a>
+            <a href="#" class="nav-item"><i class="fas fa-file-invoice-dollar"></i> المالية</a>
+        </nav>
+
+        <div class="logout-btn" onclick="location.href='index.html'">
+            <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>مرحباً بك في كود نقي ✨</h1>
+            <button class="btn-add"><i class="fas fa-plus"></i> إضافة موظف</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3>15</h3>
+                <p>إجمالي الموظفين</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-hospital"></i>
+                <h3>120</h3>
+                <p>مرضى اليوم</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-pills"></i>
+                <h3>45</h3>
+                <p>نواقص الصيدلية</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+ 
