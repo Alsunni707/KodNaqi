@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مؤسسة كود نقي - نظام إدارة المستشفى</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+            margin: 0; padding: 0;
+        }
+
+        body {
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* شاشة الافتتاح Splash Screen */
+        #splash {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+
+        .loader {
+            width: 200px;
+            height: 4px;
+            background: #eee;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            animation: load 2s forwards;
+        }
+
+        @keyframes load { to { width: 100%; } }
+
+        /* شاشة تسجيل الدخول */
+        .login-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            display: none; /* تظهر بعد الـ Splash */
+        }
+
+        .logo-box { margin-bottom: 20px; }
+        .logo-box img { width: 80px; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #2980b9; }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .error-msg { color: red; font-size: 0.8rem; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="splash">
+        <div class="logo-box">
+             <h1 style="color: var(--primary);">كود نقي</h1>
+             <p>نظام إدارة المستشفى</p>
+        </div>
+        <div class="loader"><div class="progress"></div></div>
+    </div>
+
+    <div class="login-card" id="loginForm">
+        <div class="logo-box">
+            <h2 style="color: var(--secondary);">تسجيل الدخول</h2>
+            <p style="color: #666; font-size: 0.9rem;">أدخل كلمة المرور للوصول للأقسام</p>
+        </div>
+        
+        <input type="password" id="passInput" placeholder="كلمة المرور">
+        <p id="error" class="error-msg">كلمة المرور غير صحيحة!</p>
+        <button onclick="checkLogin()">دخول للنظام</button>
+
+        <div class="footer">Powered by Kod Naqi © 2026</div>
+    </div>
+
+    <script>
+        // إخفاء الـ Splash بعد ثانيتين
+        setTimeout(() => {
+            document.getElementById('splash').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('loginForm').style.display = 'block';
+            }, 1000);
+        }, 2000);
+
+        // نظام الصلاحيات
+        function checkLogin() {
+            const pass = document.getElementById('passInput').value;
+            const error = document.getElementById('error');
+
+            if (pass === "KODNAQI7@") {
+                alert("أهلاً بك يا مدير! سيتم تحويلك للوحة التحكم الكاملة.");
+                // window.location.href = "admin.html";
+            } else if (pass === "PHARMA2026") {
+                alert("دخول الصيدلية");
+            } else if (pass === "LAB2026") {
+                alert("دخول المعمل");
+            } else if (pass === "REG2026") {
+                alert("دخول الإستقبال");
+            } else {
+                error.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
