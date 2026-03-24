@@ -5,59 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - كود نقي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00a896; --bg: #f0f4f8; }
-        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; display: flex; }
+        :root { --primary: #0089ba; --secondary: #00a896; --bg: #f0f4f8; --white: #ffffff; }
         
-        /* القائمة الجانبية */
-        .sidebar { width: 250px; background: white; height: 100vh; padding: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.05); }
-        .main { flex: 1; padding: 20px; overflow-y: auto; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Tajawal', sans-serif; background: var(--bg); margin: 0; direction: rtl; }
+
+        /* الهيدر العلوي */
+        .top-bar { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); sticky; top: 0; z-index: 100; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 45px; height: 45px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
+
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
         
-        /* البطاقات الاحصائية */
-        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
-        .stat-card { background: white; padding: 20px; border-radius: 15px; border-bottom: 4px solid var(--primary); }
+        /* البطاقات الإحصائية */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--white); padding: 20px; border-radius: 20px; text-align: right; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-bottom: 4px solid var(--primary); }
+        .stat-card i { position: absolute; left: 15px; top: 20px; font-size: 2rem; color: #e1f5fe; }
+        .stat-card h3 { margin: 0; font-size: 1.8rem; color: var(--primary); }
+        .stat-card p { margin: 5px 0 0; color: #666; font-size: 0.8rem; }
+
+        /* المهام السريعة */
+        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 25px; }
+        .action-btn { background: var(--white); border: none; padding: 15px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; transition: 0.3s; }
+        .action-btn i { font-size: 1.3rem; }
+        .action-btn span { font-size: 0.75rem; font-weight: bold; }
         
-        /* المهام السريعة - كما في الصورة */
-        .quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .action-btn { padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; font-size: 0.9rem; color: white; }
-        .btn-patient { background: #e0f2f1; color: #00796b; }
-        .btn-lab { background: #f3e5f5; color: #7b1fa2; }
-        .btn-pharma { background: #fff3e0; color: #ef6c00; }
+        .btn-reg { color: #2ecc71; background: #eafaf1; }
+        .btn-lab { color: #9b59b6; background: #f5eef8; }
+        .btn-pharma { color: #e67e22; background: #fef5e7; }
+        .action-btn:active { transform: scale(0.95); }
+
+        /* نافذة إضافة موظف (Modal) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 400px; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        /* البطاقة التعريفية والـ QR */
-        .qr-card { background: white; padding: 20px; border-radius: 20px; text-align: center; margin-top: 20px; max-width: 300px; }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #444; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 12px; background: #f9f9f9; font-family: 'Tajawal'; }
+        
+        .save-btn { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+
+        /* قسم البطاقة الذكية */
+        #cardArea { margin-top: 20px; }
+        .patient-badge { background: white; border-radius: 20px; padding: 20px; border: 2px dashed var(--primary); text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <img src="logo.png" style="width: 50px;">
-        <h3>د. السني خالد</h3>
-        <hr>
-        <p><i class="fas fa-th-large"></i> لوحة التحكم</p>
-        <p><i class="fas fa-users"></i> الموارد البشرية</p>
-        <p><i class="fas fa-pills"></i> الصيدلية</p>
+
+    <div class="top-bar">
+        <div class="user-info">
+            <div class="avatar">س</div>
+            <div>
+                <div style="font-weight: bold; font-size: 0.9rem;">د. السني خالد</div>
+                <div style="font-size: 0.7rem; color: #888;">مدير النظام</div>
+            </div>
+        </div>
+        <img src="logo.png" style="height: 35px;" onerror="this.style.display='none'">
     </div>
 
-    <div class="main">
-        <h2>نظرة عامة ✨</h2>
-        <div class="stats-container">
-            <div class="stat-card"><h3>12</h3><p>إجمالي المرضى</p></div>
-            <div class="stat-card"><h3>5</h3><p>حالات نشطة</p></div>
+    <div class="container">
+        <h3 style="text-align: right; color: #2c3e50; margin-bottom: 20px;">نظرة عامة ✨</h3>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users"></i>
+                <h3 id="empCountDisp">0</h3>
+                <p>الموظفين</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-user-injured"></i>
+                <h3 id="patCountDisp">0</h3>
+                <p>مرضى اليوم</p>
+            </div>
         </div>
 
-        <h3>المهام السريعة</h3>
+        <h3 style="text-align: right; color: #2c3e50;">المهام السريعة</h3>
         <div class="quick-actions">
-            <button class="action-btn btn-patient" onclick="alert('فتح سجل المرضى')">تسجيل مريض</button>
-            <button class="action-btn btn-lab" onclick="alert('فتح المختبر')">طلب فحص</button>
-            <button class="action-btn btn-pharma" onclick="alert('فتح الصيدلية')">صرف دواء</button>
+            <div class="action-btn btn-reg" onclick="openModal()"><i class="fas fa-user-plus"></i><span>إضافة موظف</span></div>
+            <div class="action-btn btn-lab" onclick="alert('قسم المختبر قيد التطوير')"><i class="fas fa-flask"></i><span>طلب فحص</span></div>
+            <div class="action-btn btn-pharma" onclick="alert('قسم الصيدلية قيد التطوير')"><i class="fas fa-pills"></i><span>صرف دواء</span></div>
         </div>
 
-        <div class="qr-card">
-            <h4>كود المريض (مثال)</h4>
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=PatientID-101" alt="QR">
-            <p><b>رزان عادل إسماعيل</b></p>
-            <button onclick="window.print()">طباعة البطاقة 🖨️</button>
+        <div id="cardArea"></div>
+    </div>
+
+    <div id="empModal" class="modal">
+        <div class="modal-content">
+            <h3 style="text-align: center; color: var(--primary);">إضافة موظف جديد</h3>
+            <div class="form-group">
+                <label>الاسم الكامل</label>
+                <input type="text" id="empName" placeholder="مثلاً: رزان عادل">
+            </div>
+            <div class="form-group">
+                <label>التخصص</label>
+                <select id="empJob">
+                    <option value="طبيب">طبيب</option>
+                    <option value="صيدلاني">صيدلاني</option>
+                    <option value="مختبر">فني مختبر</option>
+                    <option value="استقبال">موظف استقبال</option>
+                </select>
+            </div>
+            <button class="save-btn" onclick="saveData()">حفظ وإنشاء كود QR</button>
+            <button onclick="closeModal()" style="width:100%; background:none; border:none; margin-top:10px; color:#999; cursor:pointer;">إلغاء</button>
         </div>
     </div>
+
+    <script>
+        function openModal() { document.getElementById('empModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('empModal').style.display = 'none'; }
+
+        function saveData() {
+            const name = document.getElementById('empName').value;
+            const job = document.getElementById('empJob').value;
+            
+            if(!name) { alert("يرجى كتابة الاسم"); return; }
+
+            // تحديث العداد
+            let count = parseInt(localStorage.getItem('empCount') || "0");
+            count++;
+            localStorage.setItem('empCount', count);
+            updateDashboard();
+
+            // إنشاء البطاقة والـ QR
+            const randomID = Math.floor(1000 + Math.random() * 9000);
+            showCard(name, job, randomID);
+            
+            closeModal();
+            document.getElementById('empName').value = ""; // تصفير الحقل
+        }
+
+        function showCard(name, job, id) {
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=KODNAQI-${id}`;
+            const cardHTML = `
+                <div class="patient-badge">
+                    <h4 style="color: var(--primary); margin: 0 0 15px 0;">بطاقة كود نقي الذكية</h4>
+                    <img src="${qrUrl}" alt="QR" style="width: 140px; border-radius: 10px; margin-bottom: 10px;">
+                    <div style="font-weight: bold; font-size: 1.2rem;">${name}</div>
+                    <div style="color: #666; margin-bottom: 15px;">${job} (ID: ${id})</div>
+                    <button onclick="window.print()" style="background:#f0f0f0; border:none; padding:10px; border-radius:10px; width:100%; font-family:'Tajawal'; cursor:pointer;">
+                        <i class="fas fa-print"></i> طباعة البطاقة
+                    </button>
+                </div>
+            `;
+            document.getElementById('cardArea').innerHTML = cardHTML;
+        }
+
+        function updateDashboard() {
+            document.getElementById('empCountDisp').innerText = localStorage.getItem('empCount') || "0";
+        }
+
+        // تشغيل عند التحميل
+        window.onload = updateDashboard;
+    </script>
 </body>
 </html>
+ 
