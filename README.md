@@ -1,2 +1,1 @@
-# KodNaqi
-Health Center 
+KodNaqi Certificate Academy
